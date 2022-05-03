@@ -25,20 +25,34 @@ feedbackItemRoutes.route('/addFeedbackItem').post(async (req, res) => {
    res.send(returnFeedbackData);
 });
 
-feedbackItemRoutes.route('/deleteFeedbackItem').post(async req => {
+feedbackItemRoutes.route('/deleteFeedbackItem').post(async (req, res) => {
+   let returnFeedbackData = {};
+
+   const deleteID = ObjectId(req.body.id);
    const feedbackCollection = await conn.getDb().collection('feedbackItems');
-   await feedbackCollection.deleteOne({ _id: ObjectId(req.body.id) }, err => {
-      if (err) throw err;
-   });
+   const deletedFeedbackData = await feedbackCollection.findOne({ _id: deleteID });
+   const feedbackCollectionDeletion = await feedbackCollection.deleteOne({ _id: deleteID });
+
+   if (feedbackCollectionDeletion.acknowledged) {
+      returnFeedbackData = deletedFeedbackData;
+   }
+
+   res.send(returnFeedbackData);
 });
 
-feedbackItemRoutes.route('/updateFeedbackItem').post(async req => {
-   let newFeedbackInfo = { ...req.body, ...{ _id: ObjectId(req.body._id) } };
-   const feedbackCollection = await conn.getDb().collection('feedbackItems');
+feedbackItemRoutes.route('/updateFeedbackItem').post(async (req, res) => {
+   let returnFeedbackData = {};
 
-   await feedbackCollection.replaceOne({ _id: newFeedbackInfo._id }, newFeedbackInfo, err => {
-      if (err) throw err;
-   });
+   const updateID = ObjectId(req.body._id);
+   const newFeedbackInfo = { ...req.body, ...{ _id: updateID } };
+   const feedbackCollection = await conn.getDb().collection('feedbackItems');
+   const feedbackCollectionUpdate = await feedbackCollection.replaceOne({ _id: updateID }, newFeedbackInfo);
+
+   if (feedbackCollectionUpdate.acknowledged) {
+      returnFeedbackData = await feedbackCollection.findOne({ _id: updateID });
+   }
+
+   res.send(returnFeedbackData);
 });
 
 module.exports = feedbackItemRoutes;
