@@ -1,9 +1,9 @@
 const express = require('express');
-const feedbackRoutes = express.Router();
+const feedbackItemRoutes = express.Router();
 const conn = require('../db/conn');
 const ObjectId = require('mongodb').ObjectId;
 
-feedbackRoutes.route('/feedbackItems').get(async (req, res) => {
+feedbackItemRoutes.route('/feedbackItems').get(async (req, res) => {
    const feedbackCollection = await conn.getDb().collection('feedbackItems');
 
    await feedbackCollection.find({}).toArray((err, result) => {
@@ -12,7 +12,7 @@ feedbackRoutes.route('/feedbackItems').get(async (req, res) => {
    });
 });
 
-feedbackRoutes.route('/addFeedbackItem').post(async (req, res) => {
+feedbackItemRoutes.route('/addFeedbackItem').post(async (req, res) => {
    let returnFeedbackData = {};
 
    const feedbackCollection = await conn.getDb().collection('feedbackItems');
@@ -25,14 +25,14 @@ feedbackRoutes.route('/addFeedbackItem').post(async (req, res) => {
    res.send(returnFeedbackData);
 });
 
-feedbackRoutes.route('/deleteFeedbackItem').post(async req => {
+feedbackItemRoutes.route('/deleteFeedbackItem').post(async req => {
    const feedbackCollection = await conn.getDb().collection('feedbackItems');
    await feedbackCollection.deleteOne({ _id: ObjectId(req.body.id) }, err => {
       if (err) throw err;
    });
 });
 
-feedbackRoutes.route('/updateFeedbackItem').post(async req => {
+feedbackItemRoutes.route('/updateFeedbackItem').post(async req => {
    let newFeedbackInfo = { ...req.body, ...{ _id: ObjectId(req.body._id) } };
    const feedbackCollection = await conn.getDb().collection('feedbackItems');
 
@@ -41,4 +41,4 @@ feedbackRoutes.route('/updateFeedbackItem').post(async req => {
    });
 });
 
-module.exports = feedbackRoutes;
+module.exports = feedbackItemRoutes;
