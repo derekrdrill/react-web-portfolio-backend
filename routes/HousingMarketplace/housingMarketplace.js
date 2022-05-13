@@ -14,7 +14,7 @@ housingMarketplaceRoutes.route('/forgot-password/:email').get(async (req, res) =
       userFound = true;
       const { firstName, _id } = user;
       const token = await bcrypt.hash('new_token', 8);
-      const resetLink = `http://localhost:3000/housing-marketplace/reset-password/${token}/${_id.toString()}`;
+      const resetLink = `http://localhost:3000/housing-marketplace/reset-password/token=${token}/id=${_id.toString()}`;
 
       const transporter = nodemailer.createTransport({
          service: 'gmail',
@@ -84,6 +84,25 @@ housingMarketplaceRoutes.route('/addUser').post(async (req, res) => {
    }
 
    res.send(returnUserData);
+});
+
+housingMarketplaceRoutes.route('/updatePassword').post(async (req, res) => {
+   let returnMsg = 'Password not reset';
+
+   req.body.password = await bcrypt.hash(req.body.password, 8);
+
+   console.log(req.body.password);
+   const usersCollection = await conn.getDb().collection('userAuthentication');
+   const usersCollectionPasswordUpdate = await usersCollection.updateOne(
+      { _id: ObjectId(req.body.id) },
+      { $set: { password: req.body.password } },
+   );
+
+   if (usersCollectionPasswordUpdate.acknowledged) {
+      returnMsg = 'Password reset successfully';
+   }
+
+   res.send({ msg: returnMsg });
 });
 
 housingMarketplaceRoutes.route('/checkForUser/:email/:username').get(async (req, res) => {
