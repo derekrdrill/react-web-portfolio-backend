@@ -15,12 +15,19 @@ app.use(require('./routes/leadInfo'));
 app.use(require('./routes/listCollections'));
 app.use(require('./routes/listCollectionKeys'));
 app.use(require('./routes/feedbackItems'));
+app.use(require('./routes/HousingMarketplace/housingMarketplace'));
 
 const dbo = require('./db/conn');
+const housingMarketplaceDbo = require('./db/housingMarketplaceConn');
 
 app.listen(port, () => {
    dbo.connectToServer(err => {
       if (err) console.error(err);
    });
+
+   housingMarketplaceDbo.connectToServer(err => {
+      if (err) console.error(err);
+   });
+
    console.log(`Server is running on port: ${port}`);
 });
