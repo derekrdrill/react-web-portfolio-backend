@@ -5,6 +5,21 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const ObjectId = require('mongodb').ObjectId;
 
+housingMarketplaceRoutes.route('/find-user-with-token/:token').get(async (req, res) => {
+   let returnID = null;
+   const usersCollection = await conn.getDb().collection('userAuthentication');
+   const user = await usersCollection.findOne({ token: req.params.token });
+   const userFound = user ? true : false;
+
+   if (user) {
+      const { _id } = user;
+      returnID = _id;
+      await usersCollection.updateOne({ _id: _id }, { $set: { token: null } });
+   }
+
+   res.send({ userFound: userFound, id: returnID });
+});
+
 housingMarketplaceRoutes.route('/forgot-password/:email').get(async (req, res) => {
    let userFound = false;
    const usersCollection = await conn.getDb().collection('userAuthentication');
@@ -13,39 +28,43 @@ housingMarketplaceRoutes.route('/forgot-password/:email').get(async (req, res) =
    if (user) {
       userFound = true;
       const { firstName, _id } = user;
-      const token = await bcrypt.hash('new_token', 8);
-      const resetLink = `http://localhost:3000/housing-marketplace/reset-password/token=${token}/id=${_id.toString()}`;
+      const token = (await bcrypt.hash('new_token', 8)).replace(/\//g, '~');
+      const resetLink = `http://localhost:3000/housing-marketplace/reset-password/token=${token}`;
 
-      const transporter = nodemailer.createTransport({
-         service: 'gmail',
-         auth: {
-            user: 'derekrdrill@gmail.com',
-            pass: 'DrD151421!',
-         },
-      });
+      const insertTokenIntoUserRecord = await usersCollection.updateOne({ _id: _id }, { $set: { token: token } });
 
-      const mailOptions = {
-         from: 'derekrdrill@gmail.com',
-         to: req.params.email,
-         subject: 'Pasword reset',
-         html: `<html>
-                  <head></head>
-                  <body>
-                     <p>Hi ${firstName},</p>
-                     <p>You requested to reset your password.</p>
-                     <p>Please follow the link below to do so: </p>
-                     <a href='${resetLink}' target='_blank'>${resetLink}</a>
-=                  </body>
-               </html>`,
-      };
+      if (insertTokenIntoUserRecord.acknowledged) {
+         const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+               user: 'derekrdrill@gmail.com',
+               pass: 'DrD151421!',
+            },
+         });
 
-      transporter.sendMail(mailOptions, (error, info) => {
-         if (error) {
-            console.log(error);
-         } else {
-            console.log('Email sent: ' + info.response);
-         }
-      });
+         const mailOptions = {
+            from: 'derekrdrill@gmail.com',
+            to: req.params.email,
+            subject: 'Pasword reset',
+            html: `<html>
+                     <head></head>
+                     <body>
+                        <p>Hi ${firstName},</p>
+                        <p>You requested to reset your password.</p>
+                        <p>Please follow the link below to do so: </p>
+                        <a href='${resetLink}' target='_blank'>${resetLink}</a>
+                     </body>
+                  </html>`,
+         };
+
+         transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+               console.log(error);
+            } else {
+               console.log('Email sent: ' + info.response);
+            }
+         });
+      }
    }
 
    res.send({ userFound: userFound });
@@ -55,21 +74,29 @@ housingMarketplaceRoutes.route('/sign-in/:username/:password').get(async (req, r
    let passwordMatch = false;
    let userNameExists = false;
    let token = null;
+   let userReturnData = { firstName: null, lastName: null, email: null, username: null };
    const enteredPassword = req.params.password;
    const enteredUsername = req.params.username;
    const usersCollection = await conn.getDb().collection('userAuthentication');
    const user = await usersCollection.findOne({ userName: enteredUsername });
 
    if (!user) {
-      console.log('No user');
    } else {
+      const { password, firstName, lastName, email, userName } = user;
+
       userNameExists = true;
-      const { password } = user;
+      userReturnData = { firstName: firstName, lastName: lastName, email: email, username: userName };
+
       passwordMatch = await bcrypt.compare(enteredPassword, password).catch(e => console.warn(e));
       token = passwordMatch ? await bcrypt.hash('new_token', 8) : null;
    }
 
-   res.send({ passwordMatch: passwordMatch, userNameExists: userNameExists, token: token });
+   res.send({
+      passwordMatch: passwordMatch,
+      userNameExists: userNameExists,
+      token: token,
+      userReturnData: userReturnData,
+   });
 });
 
 housingMarketplaceRoutes.route('/addUser').post(async (req, res) => {
@@ -91,7 +118,6 @@ housingMarketplaceRoutes.route('/updatePassword').post(async (req, res) => {
 
    req.body.password = await bcrypt.hash(req.body.password, 8);
 
-   console.log(req.body.password);
    const usersCollection = await conn.getDb().collection('userAuthentication');
    const usersCollectionPasswordUpdate = await usersCollection.updateOne(
       { _id: ObjectId(req.body.id) },
@@ -107,14 +133,10 @@ housingMarketplaceRoutes.route('/updatePassword').post(async (req, res) => {
 
 housingMarketplaceRoutes.route('/checkForUser/:email/:username').get(async (req, res) => {
    let returnObject = {};
-   console.log(req.params);
 
    const usersCollection = await conn.getDb().collection('userAuthentication');
    const usernameExists = await usersCollection.findOne({ userName: req.params.username });
    const userEmailExists = await usersCollection.findOne({ email: req.params.email });
-
-   console.log(usernameExists);
-   console.log(userEmailExists);
 
    if (userEmailExists) {
       returnObject = { msg: 'An account under this email exists already' };
