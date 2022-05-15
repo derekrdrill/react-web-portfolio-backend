@@ -15,7 +15,8 @@ app.use(require('./routes/leadInfo'));
 app.use(require('./routes/listCollections'));
 app.use(require('./routes/listCollectionKeys'));
 app.use(require('./routes/feedbackItems'));
-app.use(require('./routes/HousingMarketplace/housingMarketplace'));
+app.use(require('./routes/HousingMarketplace/housingMarketplaceAuth'));
+app.use(require('./routes/HousingMarketplace/housingMarketplaceExplore'));
 
 const dbo = require('./db/conn');
 const housingMarketplaceDbo = require('./db/housingMarketplaceConn');
