@@ -59,6 +59,21 @@ housingMarketplaceRoutes.route('/get-listings-with-offers').get(async (req, res)
    res.send({ listings: listingsData ?? [] });
 });
 
+housingMarketplaceRoutes.route('/delete-listing/:listingID').post(async (req, res) => {
+   let returnListingData = {};
+
+   const deleteID = ObjectId(req.params.listingID);
+   const listingsCollection = await conn.getDb().collection('listings');
+   const deletedFeedbackData = await listingsCollection.findOne({ _id: deleteID });
+   const listingsCollectionDeletion = await listingsCollection.deleteOne({ _id: deleteID });
+
+   if (listingsCollectionDeletion.acknowledged) {
+      returnListingData = deletedFeedbackData;
+   }
+
+   res.send(returnListingData);
+});
+
 housingMarketplaceRoutes.route('/create-listing').post(async (req, res) => {
    let returnListingData = [];
 
