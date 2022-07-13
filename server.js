@@ -1,9 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const pino = require('express-pino-logger')();
 const app = express();
 const cors = require('cors');
-const port = 3001;
+const port = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use(require('./routes/listCollectionKeys'));
 app.use(require('./routes/feedbackItems'));
 app.use(require('./routes/HousingMarketplace/housingMarketplaceAuth'));
 app.use(require('./routes/HousingMarketplace/housingMarketplace'));
+app.use(require('./routes/ConnectWithMe/connectWithMeEmail'));
 app.use(express.static('public'));
 
 const dbo = require('./db/conn');

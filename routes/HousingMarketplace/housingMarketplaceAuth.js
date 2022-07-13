@@ -37,13 +37,13 @@ housingMarketplaceRoutes.route('/forgot-password/:email').get(async (req, res) =
          const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-               user: 'derekrdrill@gmail.com',
-               pass: 'DrD151421!',
+               user: process.env.GOOGLE_EMAIL_ACCOUNT,
+               pass: process.env.GOOGLE_APP_PASSWORD,
             },
          });
 
          const mailOptions = {
-            from: 'derekrdrill@gmail.com',
+            from: process.env.GOOGLE_EMAIL_ACCOUNT,
             to: req.params.email,
             subject: 'Pasword reset',
             html: `<html>
