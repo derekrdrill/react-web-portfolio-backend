@@ -59,10 +59,10 @@ housingMarketplaceRoutes.route('/get-listings-with-offers').get(async (req, res)
    res.send({ listings: listingsData ?? [] });
 });
 
-housingMarketplaceRoutes.route('/delete-listing/:listingID').post(async (req, res) => {
+housingMarketplaceRoutes.route('/delete-listing').post(async (req, res) => {
    let returnListingData = {};
 
-   const deleteID = ObjectId(req.params.listingID);
+   const deleteID = ObjectId(req.body.id);
    const listingsCollection = await conn.getDb().collection('listings');
    const deletedFeedbackData = await listingsCollection.findOne({ _id: deleteID });
    const listingsCollectionDeletion = await listingsCollection.deleteOne({ _id: deleteID });
@@ -71,7 +71,7 @@ housingMarketplaceRoutes.route('/delete-listing/:listingID').post(async (req, re
       returnListingData = deletedFeedbackData;
    }
 
-   res.send(returnListingData);
+   res.send(returnListingData.name);
 });
 
 housingMarketplaceRoutes.route('/create-listing').post(async (req, res) => {
@@ -92,6 +92,31 @@ housingMarketplaceRoutes.route('/create-listing').post(async (req, res) => {
    }
 
    res.send({ data: returnListingData });
+});
+
+housingMarketplaceRoutes.route('/update-listing').post(async (req, res) => {
+   let returnMessage = '';
+   let formData = req.body.formData;
+   let newImageUrls = req.body.images;
+   let imageUrls = formData.imageUrls;
+
+   const listingsCollection = await conn.getDb().collection('listings');
+   const listingData = { ...formData, imageUrls: [...imageUrls, ...newImageUrls] };
+
+   const listingID = listingData['_id'];
+
+   delete listingData['_id'];
+   delete listingData['images'];
+
+   const updateListing = await listingsCollection.replaceOne({ _id: ObjectId(listingID) }, listingData);
+
+   if (updateListing.acknowledged) {
+      returnMessage = 'Listing updated!';
+   } else {
+      returnMessage = 'Update failed';
+   }
+
+   res.send({ message: returnMessage });
 });
 
 housingMarketplaceRoutes.route('/upload-images').post(async (req, res) => {
