@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const pino = require('express-pino-logger')();
 const app = express();
 const cors = require('cors');
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
