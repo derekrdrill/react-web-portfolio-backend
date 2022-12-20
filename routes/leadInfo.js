@@ -6,8 +6,6 @@ const ObjectId = require('mongodb').ObjectId;
 recordRoutes.route('/leadInput').get(async (req, res) => {
    const db = await conn.getDb();
 
-   console.log(db);
-
    const leadInputData = db.collection('leadInput');
 
    leadInputData.find({}).toArray((err, result) => {
