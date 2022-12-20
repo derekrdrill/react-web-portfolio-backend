@@ -14,6 +14,10 @@ recordRoutes.route('/leadInput').get(function (req, res) {
       });
 });
 
+recordRoutes.route('/test').get(function (req, res) {
+   res.send('TEST!!!');
+});
+
 recordRoutes.route('/addLeadInput').post(function (req) {
    conn
       .getDb()
