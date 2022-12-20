@@ -4,9 +4,10 @@
    "description": "",
    "main": "index.js",
    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
+      "format": "npx prettier --write .",
       "server": "node-env-run server --exec nodemons | pino-colada",
-      "format": "npx prettier --write ."
+      "start": "node index.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
    },
    "keywords": [],
    "author": "",
