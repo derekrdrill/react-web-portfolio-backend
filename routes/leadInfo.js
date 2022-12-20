@@ -3,8 +3,8 @@ const recordRoutes = express.Router();
 const conn = require('../db/conn');
 const ObjectId = require('mongodb').ObjectId;
 
-recordRoutes.route('/leadInput').get(function (req, res) {
-   conn
+recordRoutes.route('/leadInput').get(async (req, res) => {
+   await conn
       .getDb()
       .collection('leadInput')
       .find({})
@@ -14,8 +14,8 @@ recordRoutes.route('/leadInput').get(function (req, res) {
       });
 });
 
-recordRoutes.route('/addLeadInput').post(function (req) {
-   conn
+recordRoutes.route('/addLeadInput').post(async req => {
+   await conn
       .getDb()
       .collection('leadInput')
       .insert(req.body, err => {
@@ -23,8 +23,8 @@ recordRoutes.route('/addLeadInput').post(function (req) {
       });
 });
 
-recordRoutes.route('/deleteLeadInput/:leadID').post(function (req) {
-   conn
+recordRoutes.route('/deleteLeadInput/:leadID').post(async req => {
+   await conn
       .getDb()
       .collection('leadInput')
       .deleteOne({ _id: ObjectId(req.params.leadID) }, err => {
@@ -32,10 +32,10 @@ recordRoutes.route('/deleteLeadInput/:leadID').post(function (req) {
       });
 });
 
-recordRoutes.route('/replaceLeadInput').post(function (req) {
-   let newLeadInfo = { ...req.body, ...{ _id: ObjectId(req.body._id) } };
+recordRoutes.route('/replaceLeadInput').post(async req => {
+   let newLeadInfo = await { ...req.body, ...{ _id: ObjectId(req.body._id) } };
 
-   conn
+   await conn
       .getDb()
       .collection('leadInput')
       .replaceOne({ _id: newLeadInfo._id }, newLeadInfo, err => {
