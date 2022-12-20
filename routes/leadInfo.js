@@ -4,18 +4,10 @@ const conn = require('../db/conn');
 const ObjectId = require('mongodb').ObjectId;
 
 recordRoutes.route('/leadInput').get(async (req, res) => {
-   // await conn
-   //    .getDb()
-   //    .collection('leadInput')
-   //    .find({})
-   //    .toArray((err, result) => {
-   //       if (err) throw err;
-   //       res.json(result);
-   //    });
+   const db = await conn.getDb();
+   const leadInputData = await db.collection('leadInput');
 
-   const leadInputData = await conn.getDb().collection('leadInput');
-
-   await leadInputData.find({}).toArray((err, result) => {
+   leadInputData.find({}).toArray((err, result) => {
       if (err) throw err;
       res.json(result);
    });
