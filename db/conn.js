@@ -1,19 +1,22 @@
 const { MongoClient } = require('mongodb');
 const Db = process.env.MAIN_DATABASE;
-const client = new MongoClient(Db);
 
-var _db;
+let _db;
 
 module.exports = {
-   connectToServer: function (callback) {
-      client.connect(function (err, db) {
-         if (db) {
-            _db = db.db();
-            console.log('Successfully connected to MongoDB.');
-         }
+   connectToServer: callback => {
+      MongoClient.connect(Db)
+         .then(client => {
+            const dbConnection = client.db();
 
-         return callback(err);
-      });
+            if (dbConnection) {
+               _db = dbConnection;
+               console.log('Main DB Connected');
+            }
+         })
+         .catch(err => {
+            console.log(err);
+         });
    },
 
    getDb: function () {
