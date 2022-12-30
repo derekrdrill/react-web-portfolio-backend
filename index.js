@@ -18,6 +18,7 @@ app.use(require('./routes/feedbackItems'));
 app.use(require('./routes/HousingMarketplace/housingMarketplaceAuth'));
 app.use(require('./routes/HousingMarketplace/housingMarketplace'));
 app.use(require('./routes/ConnectWithMe/connectWithMeEmail'));
+app.use(require('./routes/Cocktail/cocktail'));
 app.use(express.static('public'));
 
 const dbo = require('./db/conn');
