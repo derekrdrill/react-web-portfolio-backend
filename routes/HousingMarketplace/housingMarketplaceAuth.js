@@ -29,7 +29,7 @@ housingMarketplaceRoutes.route('/forgot-password/:email').get(async (req, res) =
       userFound = true;
       const { firstName, _id } = user;
       const token = (await bcrypt.hash('new_token', 8)).replace(/\//g, '~');
-      const resetLink = `http://localhost:3000/housing-marketplace/reset-password/token=${token}`;
+      const resetLink = `${process.env.FRONT_END_URL}/housing-marketplace/reset-password/token=${token}`;
 
       const insertTokenIntoUserRecord = await usersCollection.updateOne({ _id: _id }, { $set: { token: token } });
 
