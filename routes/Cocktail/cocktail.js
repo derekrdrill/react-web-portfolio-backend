@@ -62,7 +62,7 @@ cocktailRoutes.route('/get-cocktail-names-glasses-ingredients').get(async (req, 
       .filter(drink => !drink.includes('1-900'))
       .sort();
 
-   glassTypes = [...new Set(await cocktailData.map(drink => drink.strGlass).sort())];
+   glassTypes = [...new Set(await cocktailData.map(drink => drink.strGlass.toUpperCase()).sort())];
 
    await cocktailData.forEach(drink => {
       for (let i = 1; i <= 15; i++) {
