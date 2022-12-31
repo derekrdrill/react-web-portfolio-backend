@@ -19,10 +19,12 @@ app.use(require('./routes/HousingMarketplace/housingMarketplaceAuth'));
 app.use(require('./routes/HousingMarketplace/housingMarketplace'));
 app.use(require('./routes/ConnectWithMe/connectWithMeEmail'));
 app.use(require('./routes/Cocktail/cocktail'));
+app.use(require('./routes/NBAEverything/nbaEverything'));
 app.use(express.static('public'));
 
 const dbo = require('./db/conn');
 const housingMarketplaceDbo = require('./db/housingMarketplaceConn');
+const nbaEverythingDbo = require('./db/nbaEverything');
 
 app.listen(port, () => {
    dbo.connectToServer(err => {
@@ -30,6 +32,10 @@ app.listen(port, () => {
    });
 
    housingMarketplaceDbo.connectToServer(err => {
+      if (err) console.error(err);
+   });
+
+   nbaEverythingDbo.connectToServer(err => {
       if (err) console.error(err);
    });
 
