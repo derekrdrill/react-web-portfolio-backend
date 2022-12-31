@@ -125,7 +125,7 @@ nbaEverythingRoutes.route('/get-all-teams').get(async (req, res) => {
       .find({})
       .toArray((err, result) => {
          if (err) throw err;
-         res.json(result);
+         res.json(result.sort((a, b) => (a.full_name > b.full_name ? 1 : a.full_name < b.full_name ? -1 : 0)));
       });
 });
 
