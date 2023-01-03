@@ -76,10 +76,10 @@ nbaEverythingRoutes.route('/get-team-game-data-by-team-and-season/:teamID/:seaso
    const wins = await gameDataWithWins.filter(game => game.win).length;
    const losses = (await gameData.length) - wins;
 
-   res.send({ teamGameData: gameData, wins: wins, losses: losses, ppg, ppg });
+   res.send({ teamGameData: gameDataWithWins, wins: wins, losses: losses, gamesPlayed: wins + losses, ppg, ppg });
 });
 
-nbaEverythingRoutes.route('/get-player-data-by-team-and-season/:teamID/:season').get(async (req, res) => {
+nbaEverythingRoutes.route('/get-player-and-team-totals-by-team-and-season/:teamID/:season').get(async (req, res) => {
    const players = await conn
       .getDb()
       .collection('players')
@@ -115,7 +115,35 @@ nbaEverythingRoutes.route('/get-player-data-by-team-and-season/:teamID/:season')
             .filter(data => data)[0],
    );
 
-   res.send(playerData);
+   const gameDataOptions = {
+      method: 'GET',
+      params: { page: 1, per_page: '82' },
+      url: `https://www.balldontlie.io/api/v1/games?seasons[]=${req.params.season}&team_ids[]=${req.params.teamID}`,
+   };
+
+   const gameDataRequest = await axios.request(gameDataOptions).catch(e => console.error(e));
+
+   const gamesPlayed = await gameDataRequest.data.data.filter(
+      game => game.home_team_score > 0 && game.visitor_team_score > 0,
+   ).length;
+
+   const reboundsArray = await playerData.map(player => player.reb * player.games_played);
+   const assistsArray = await playerData.map(player => player.ast * player.games_played);
+   const stlsArray = await playerData.map(player => player.stl * player.games_played);
+   const blksArray = await playerData.map(player => player.blk * player.games_played);
+
+   const rpg = (reboundsArray.reduce((partialSum, a) => partialSum + a, 0) / gamesPlayed).toFixed(2);
+   const apg = (assistsArray.reduce((partialSum, a) => partialSum + a, 0) / gamesPlayed).toFixed(2);
+   const spg = (stlsArray.reduce((partialSum, a) => partialSum + a, 0) / gamesPlayed).toFixed(2);
+   const bpg = (blksArray.reduce((partialSum, a) => partialSum + a, 0) / gamesPlayed).toFixed(2);
+
+   res.send({
+      playerData: playerData,
+      rpg: rpg,
+      apg: apg,
+      spg: spg,
+      bpg: bpg,
+   });
 });
 
 nbaEverythingRoutes.route('/get-all-teams').get(async (req, res) => {
@@ -159,26 +187,6 @@ nbaEverythingRoutes.route('/update-nba-data').get(async (req, res) => {
          });
    };
 
-   const insertTeamData = async () => {
-      await axios
-         .request({ method: 'GET', url: 'https://www.balldontlie.io/api/v1/teams', params: { page: '0' } })
-         .then(async response => {
-            teamData = response.data.data;
-
-            await teamData.forEach(async team => {
-               await conn
-                  .getDb()
-                  .collection('teams')
-                  .insertOne(team, (err, res) => {
-                     if (err) throw err;
-                  });
-            });
-         })
-         .catch(function (error) {
-            console.error(error);
-         });
-   };
-
    if (allCollections.includes('players')) {
       await conn
          .getDb()
@@ -189,21 +197,9 @@ nbaEverythingRoutes.route('/update-nba-data').get(async (req, res) => {
          });
    }
 
-   if (allCollections.includes('teams')) {
-      await conn
-         .getDb()
-         .collection('teams')
-         .drop((err, deleted) => {
-            if (err) throw err;
-            if (deleted) console.log('Teams collection deleted');
-         });
-   }
-
    for (let i = 0; i <= 40; i++) {
       await insertPlayerData(i);
    }
-
-   await insertTeamData();
 
    res.send('Data inserted');
 });
