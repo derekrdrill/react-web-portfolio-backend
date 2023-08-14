@@ -12,6 +12,21 @@ There are several routes that power the CRUD operations of several pages in my w
 
 <ul>
   <li>
+    Connect With Me
+    <ul>
+      <li>
+        <a href='https://www.derekdrill.com/connect-with-me'>
+          https://www.derekdrill.com/connect-with-me
+        </a>
+      </li>
+      <li>
+         <a href='https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/ConnectWithMe'>
+         https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/ConnectWithMe
+        </a>
+      </li>
+    </ul>
+  </li>
+  <li>
     Lead Input Form/AdminData Table 
     <ul>
       <li>
