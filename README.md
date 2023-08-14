@@ -13,26 +13,62 @@ There are several routes that power the CRUD operations of several pages in my w
 <ul>
   <li>
     Lead Input Form/AdminData Table 
-    <a href='https://www.derekdrill.com/lead-input-page'>
-      https://www.derekdrill.com/lead-input-page
-    </a>
+    <ul>
+      <li>
+        <a href='https://www.derekdrill.com/lead-input-page'>
+          https://www.derekdrill.com/lead-input-page
+        </a>
+      </li>
+      <li>
+         <a href='https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/LeadInputForm'>
+         https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/LeadInputForm
+        </a>
+      </li>
+    </ul>
   </li>
   <li>
     Housing Marketplace App (Requires registration/authentication)
-     <a href='https://www.derekdrill.com/housing-marketplace/auth'>
-      https://www.derekdrill.com/housing-marketplace/auth
-    </a>
+    <ul>
+      <li>
+        <a href='https://www.derekdrill.com/housing-marketplace/auth'>
+          https://www.derekdrill.com/housing-marketplace/auth
+        </a>
+      </li>
+      <li>
+         <a href='https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/HousingMarketplace'>
+         https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/HousingMarketplace
+        </a>
+      </li>
+    </ul>
   </li>
   <li>
-    Cocktail App
-    <a href='https://www.derekdrill.com/drink-up'>
-      https://www.derekdrill.com/housing-marketplace/drink-up
-    </a>
+    Cocktail app
+    <ul>
+      <li>
+        <a href='https://www.derekdrill.com/drink-up'>
+          https://www.derekdrill.com/drink-up
+        </a>
+      </li>
+      <li>
+         <a href='https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/Cocktail'>
+         https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/Cocktail
+        </a>
+      </li>
+    </ul>
   </li>
   <li>
     NBA Everything
-    <a href='https://www.derekdrill.com/nba-everything'>
-      https://www.derekdrill.com/housing-marketplace/nba-everything
-    </a>
+    <ul>
+      <li>
+        <a href='https://www.derekdrill.com/nba-everything'>
+          https://www.derekdrill.com/nba-everything
+        </a>
+      </li>
+      <li>
+         <a href='https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/NBAEverything'>
+         https://github.com/derekrdrill/react-web-portfolio/tree/development/src/components/NBAEverything
+        </a>
+      </li>
+    </ul>
   </li>
 </ul>
