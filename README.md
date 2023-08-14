@@ -12,15 +12,27 @@ There are several routes that power the CRUD operations of several pages in my w
 
 <ul>
   <li>
-    Lead Input Form/AdminData Table
+    Lead Input Form/AdminData Table 
+    <a href='https://www.derekdrill.com/lead-input-page'>
+      https://www.derekdrill.com/lead-input-page
+    </a>
   </li>
   <li>
-    Housing Marketplace App
+    Housing Marketplace App (Requires registration/authentication)
+     <a href='https://www.derekdrill.com/housing-marketplace/auth'>
+      https://www.derekdrill.com/housing-marketplace/auth
+    </a>
   </li>
   <li>
     Cocktail App
+    <a href='https://www.derekdrill.com/drink-up'>
+      https://www.derekdrill.com/housing-marketplace/drink-up
+    </a>
   </li>
   <li>
     NBA Everything
+    <a href='https://www.derekdrill.com/nba-everything'>
+      https://www.derekdrill.com/housing-marketplace/nba-everything
+    </a>
   </li>
 </ul>
