@@ -70,7 +70,10 @@ nbaEverythingRoutes.route('/get-game-detail-date-by-game-id/:gameID/').get(async
    const gameDetailDataOptions = {
       method: 'GET',
       params: { page: 1, per_page: '50' },
-      url: `https://www.balldontlie.io/api/v1/stats?game_ids[]=${req.params.gameID}`,
+      url: `https://api.balldontlie.io/v1/stats?game_ids[]=${req.params.gameID}`,
+      headers: {
+         Authorization: process.env.BALL_DONT_LIE_API_KEY,
+      },
    };
 
    const gameDetailDataRequest = await axios.request(gameDetailDataOptions).catch(e => console.error(e));
@@ -208,7 +211,10 @@ nbaEverythingRoutes.route('/get-team-game-data-by-team-and-season/:teamID/:seaso
    const gameDataOptions = {
       method: 'GET',
       params: { page: 1, per_page: '82' },
-      url: `https://www.balldontlie.io/api/v1/games?seasons[]=${req.params.season}&team_ids[]=${req.params.teamID}`,
+      url: `https://api.balldontlie.io/v1/games?seasons[]=${req.params.season}&team_ids[]=${req.params.teamID}`,
+      headers: {
+         Authorization: process.env.BALL_DONT_LIE_API_KEY,
+      },
    };
 
    const gameDataRequest = await axios.request(gameDataOptions).catch(e => console.error(e));
@@ -288,6 +294,9 @@ nbaEverythingRoutes.route('/get-player-and-team-totals-by-team-and-season/:teamI
       url: `https://www.balldontlie.io/api/v1/season_averages?season=${req.params.season}${await playerIDsString(
          playerIDs,
       )}`,
+      headers: {
+         Authorization: process.env.BALL_DONT_LIE_API_KEY,
+      },
    };
 
    const seasonAveragesRequest = await axios.request(seasonAvgsOptions).catch(e => console.error(e));
@@ -304,6 +313,9 @@ nbaEverythingRoutes.route('/get-player-and-team-totals-by-team-and-season/:teamI
       method: 'GET',
       params: { page: 1, per_page: '82' },
       url: `https://www.balldontlie.io/api/v1/games?seasons[]=${req.params.season}&team_ids[]=${req.params.teamID}`,
+      headers: {
+         Authorization: process.env.BALL_DONT_LIE_API_KEY,
+      },
    };
 
    const gameDataRequest = await axios.request(gameDataOptions).catch(e => console.error(e));
@@ -349,8 +361,11 @@ nbaEverythingRoutes.route('/update-nba-data-game-stats/:season/:startPage/:endPa
    const insertStatsData = async page => {
       const options = {
          method: 'GET',
-         url: `https://www.balldontlie.io/api/v1/stats?seasons[]=${req.params.season}`,
+         url: `https://api.balldontlie.io/v1/stats?seasons[]=${req.params.season}`,
          params: { page: page, per_page: '100' },
+         headers: {
+            Authorization: process.env.BALL_DONT_LIE_API_KEY,
+         },
       };
 
       await axios
@@ -413,6 +428,9 @@ nbaEverythingRoutes.route('/update-nba-data').get(async (req, res) => {
          method: 'GET',
          url: 'https://www.balldontlie.io/api/v1/players',
          params: { page: page, per_page: '100' },
+         headers: {
+            Authorization: process.env.BALL_DONT_LIE_API_KEY,
+         },
       };
 
       await axios
