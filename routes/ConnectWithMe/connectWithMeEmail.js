@@ -2,7 +2,7 @@ const express = require('express');
 const connectWithMeEmailRoutes = express.Router();
 const nodemailer = require('nodemailer');
 
-connectWithMeEmailRoutes.route('/send-email/:email/:firstName/:lastName/:message/:phone').get(async (req, res) => {
+connectWithMeEmailRoutes.route('/send-email/:email/:firstName/:lastName/:message/:phone?').get(async (req, res) => {
    const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -38,7 +38,7 @@ connectWithMeEmailRoutes.route('/send-email/:email/:firstName/:lastName/:message
                      <br />
                      <p>${req.params.firstName} ${req.params.lastName}</p>
                      <p>${req.params.email}</p>
-                     <p>${req.params.phone}</p>
+                     <p>${req.params.phone || ''}</p>
                   </body>
                </html>`,
       },
